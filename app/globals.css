@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --void-black: #050505;
+  --void-red: #d1001f;
+  --void-red-bright: #ff1f3d;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--void-black);
+  color: #fff;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The 3D canvas owns the full viewport; UI floats above it. */
+html,
+body,
+#__next {
+  width: 100%;
+  height: 100%;
+}
+
+@layer base {
+  /* Disable native focus ring noise; we draw our own red accents. */
+  :focus-visible {
+    outline: 1px solid rgba(209, 0, 31, 0.7);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Thin clinical scrollbar for the ecommerce + modal surfaces. */
+  .void-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .void-scroll::-webkit-scrollbar-track {
+    background: #0b0b0d;
+  }
+  .void-scroll::-webkit-scrollbar-thumb {
+    background: #2a0008;
+    border-radius: 999px;
+  }
+  .void-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--void-red);
+  }
+
+  /* Reusable hard-edged HUD button. */
+  .void-btn {
+    @apply relative inline-flex items-center justify-center gap-3
+      border border-void-red/60 bg-black/40 px-8 py-3
+      font-display uppercase tracking-wide text-sm text-white
+      transition-all duration-300;
+    clip-path: polygon(
+      10px 0,
+      100% 0,
+      100% calc(100% - 10px),
+      calc(100% - 10px) 100%,
+      0 100%,
+      0 10px
+    );
+  }
+  .void-btn:hover {
+    @apply border-void-red bg-void-red/15 shadow-red-glow;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 18px rgba(209, 0, 31, 0.65), 0 0 4px rgba(255, 31, 61, 0.6);
+  }
+  .text-glow-white {
+    text-shadow: 0 0 22px rgba(255, 255, 255, 0.45);
+  }
+  /* Film grain overlay reused by HTML surfaces (the canvas gets its own GPU noise). */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+  /* Drop the black background out of the brand PNG logo so it sits on any surface. */
+  .logo-key {
+    mix-blend-mode: lighten;
+  }
+  .cut-corner {
+    clip-path: polygon(
+      0 0,
+      calc(100% - 14px) 0,
+      100% 14px,
+      100% 100%,
+      14px 100%,
+      0 calc(100% - 14px)
+    );
+  }
+}
+
+/* Respect users who ask for less motion: kill the heavy ambient animations. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-flicker,
+  .animate-pulse-red,
+  .animate-scan {
+    animation: none !important;
+  }
+}
