@@ -87,6 +87,11 @@ body,
   .text-glow-white {
     text-shadow: 0 0 22px rgba(255, 255, 255, 0.45);
   }
+  /* Legible label over bright glow: dark outline + soft red halo. */
+  .void-label {
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.95), 0 1px 5px rgba(0, 0, 0, 0.9),
+      0 2px 10px rgba(0, 0, 0, 0.85), 0 0 18px rgba(209, 0, 31, 0.5);
+  }
   /* Film grain overlay reused by HTML surfaces (the canvas gets its own GPU noise). */
   .grain::after {
     content: "";

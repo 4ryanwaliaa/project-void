@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useVoid } from "@/lib/store";
 import { useDevice } from "@/lib/useDevice";
-import LoadingScreen from "@/components/ui/LoadingScreen";
 import LandingScreen from "@/components/ui/LandingScreen";
 import Hud from "@/components/ui/Hud";
 import MysteryDropModal from "@/components/ui/MysteryDropModal";
@@ -62,10 +61,7 @@ export default function VoidExperience() {
     <div className="absolute inset-0">
       <SceneCanvas />
 
-      {/* Initial asset boot loader. */}
-      <LoadingScreen />
-
-      {/* Landing: logo + ENTER. Disappears as the flythrough begins. */}
+      {/* Landing: logo + ENTER. Shown immediately (no separate loading screen). */}
       <AnimatePresence>
         {(phase === "landing" || phase === "boot") && <LandingScreen key="landing" />}
       </AnimatePresence>

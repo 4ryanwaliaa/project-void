@@ -235,7 +235,7 @@ export default function EmergencyBox() {
       {showLabels && (
         <>
           <Html position={[0, 1.35, 0.1]} center zIndexRange={[20, 0]} style={{ pointerEvents: "none" }}>
-            <div className="whitespace-nowrap text-center font-display text-sm font-semibold tracking-[0.35em] text-void-red text-glow">
+            <div className="whitespace-nowrap text-center font-display text-base font-bold tracking-[0.35em] text-white void-label">
               EMERGENCY BOX
             </div>
           </Html>
@@ -250,8 +250,8 @@ export default function EmergencyBox() {
                 setHover("none");
                 setLocalHover(false);
               }}
-              className={`flex items-center gap-2 whitespace-nowrap font-mono text-[11px] tracking-[0.3em] transition ${
-                active ? "text-white text-glow" : "text-void-ash"
+              className={`flex items-center gap-2 whitespace-nowrap font-mono text-[11px] font-bold tracking-[0.3em] void-label transition ${
+                active ? "text-white" : "text-white/85"
               }`}
             >
               BREAK GLASS
