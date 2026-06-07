@@ -16,13 +16,16 @@ export interface Product {
   description: string;
 }
 
+// Every frame is priced at ₹799 (so the average across the collection is ₹799).
+const FRAME_PRICE = 799;
+
 export const PRODUCTS: Product[] = [
   {
     id: "void-001",
     slug: "give-up",
     title: "GIVE UP ON YOUR DREAMS",
     series: "SURVEY CORPS",
-    price: 89,
+    price: FRAME_PRICE,
     image: "/products/p-give-up.png",
     accent: "#3f6b4f",
     tag: "FRAME",
@@ -35,7 +38,7 @@ export const PRODUCTS: Product[] = [
     slug: "baryon",
     title: "BARYON MODE",
     series: "NINE-TAILS",
-    price: 99,
+    price: FRAME_PRICE,
     image: "/products/p-baryon.png",
     accent: "#ff7a18",
     tag: "FRAME",
@@ -48,7 +51,7 @@ export const PRODUCTS: Product[] = [
     slug: "void-signal",
     title: "VOID SIGNAL",
     series: "PROJECT VOID",
-    price: 79,
+    price: FRAME_PRICE,
     image: "/products/p-void-signal.png",
     accent: "#D1001F",
     tag: "FRAME",
@@ -61,7 +64,7 @@ export const PRODUCTS: Product[] = [
     slug: "crimson-ronin",
     title: "CRIMSON RONIN",
     series: "EDO-2099",
-    price: 109,
+    price: FRAME_PRICE,
     image: "/products/p-crimson-ronin.png",
     accent: "#D1001F",
     tag: "LIMITED",
@@ -74,7 +77,7 @@ export const PRODUCTS: Product[] = [
     slug: "ghost-protocol",
     title: "GHOST PROTOCOL",
     series: "SECTOR 9",
-    price: 95,
+    price: FRAME_PRICE,
     image: "/products/p-ghost-protocol.png",
     accent: "#8a8a8f",
     tag: "FRAME",
@@ -87,7 +90,7 @@ export const PRODUCTS: Product[] = [
     slug: "neon-requiem",
     title: "NEON REQUIEM",
     series: "AFTERLIFE",
-    price: 129,
+    price: FRAME_PRICE,
     image: "/products/p-neon-requiem.png",
     accent: "#ff1f3d",
     tag: "LIMITED",
@@ -102,9 +105,9 @@ export function getProduct(slug: string): Product | undefined {
 }
 
 export function formatPrice(value: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
+    currency: "INR",
+    maximumFractionDigits: 0,
   }).format(value);
 }

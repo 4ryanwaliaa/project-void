@@ -109,9 +109,6 @@ export default function FramesWall() {
               }`}
             >
               VIEW COLLECTION
-              <span className="grid h-4 w-4 place-items-center border border-void-red/60 text-[9px] text-void-red">
-                E
-              </span>
             </button>
           </Html>
         </>

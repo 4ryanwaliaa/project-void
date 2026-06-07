@@ -255,9 +255,6 @@ export default function EmergencyBox() {
               }`}
             >
               BREAK GLASS
-              <span className="grid h-4 w-4 place-items-center border border-void-red/60 text-[9px] text-void-red">
-                E
-              </span>
             </button>
           </Html>
         </>

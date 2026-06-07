@@ -68,8 +68,28 @@ export default function MysteryDropModal() {
               </button>
             </div>
 
+            {/* COMING SOON hero */}
+            <div className="relative border-b border-void-line px-6 py-10 text-center sm:px-8">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 18 }}
+                className="font-display text-4xl font-bold tracking-[0.18em] text-white text-glow sm:text-6xl"
+              >
+                COMING SOON
+              </motion.div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="mt-3 font-mono text-[11px] tracking-[0.35em] text-void-red"
+              >
+                THE VAULT IS SEALED — NEW DROPS INCOMING
+              </motion.p>
+            </div>
+
             {/* drops */}
-            <div className="void-scroll max-h-[52vh] overflow-y-auto px-6 py-6 sm:px-8">
+            <div className="void-scroll max-h-[42vh] overflow-y-auto px-6 py-6 sm:px-8">
               <div className="grid gap-4 sm:grid-cols-2">
                 {DROPS.map((drop, i) => (
                   <motion.div
