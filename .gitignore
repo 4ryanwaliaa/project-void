@@ -35,3 +35,10 @@ next-env.d.ts
 /*.jpeg
 /ChatGPT*.png
 /it's just*.mp3
+
+# SECRETS — never commit
+*.csv
+rzp-key.csv
+.env
+.env.local
+.env*.local

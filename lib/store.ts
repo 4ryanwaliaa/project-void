@@ -52,6 +52,7 @@ interface VoidState {
   addToCart: (product: Product) => void;
   removeFromCart: (id: string) => void;
   changeQty: (id: string, delta: number) => void;
+  clearCart: () => void;
   setCartOpen: (v: boolean) => void;
   cartCount: () => number;
   cartTotal: () => number;
@@ -138,6 +139,8 @@ export const useVoid = create<VoidState>((set, get) => ({
         )
         .filter((l) => l.qty > 0),
     })),
+
+  clearCart: () => set({ cart: [] }),
 
   setCartOpen: (v) => set({ cartOpen: v }),
 
