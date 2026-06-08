@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.vercel
+.claude
+void-qr.png
+
+# secrets — never upload
+*.csv
+.env
+.env*.local
+
+# raw input assets at repo root (copies already live under /public)
+/*.jpeg
+/ChatGPT*.png
+/it's just*.mp3

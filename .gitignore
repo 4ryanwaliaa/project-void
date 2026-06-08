@@ -42,3 +42,5 @@ rzp-key.csv
 .env
 .env.local
 .env*.local
+
+.vercel
