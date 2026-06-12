@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useVoid } from "@/lib/store";
 import { formatPrice } from "@/lib/products";
@@ -30,6 +31,21 @@ export default function CartDrawer() {
     }, 300);
   };
 
+  // Escape closes the drawer; lock page scroll behind it while it's open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open, setOpen]);
+
   async function handleCheckout() {
     if (cart.length === 0) return;
     setError("");
@@ -43,10 +59,14 @@ export default function CartDrawer() {
     }
 
     try {
+      // Send line items, not an amount — the server prices the order from the
+      // canonical catalog so the total can't be tampered with in the browser.
       const res = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: Math.round(total * 100) }),
+        body: JSON.stringify({
+          items: cart.map((l) => ({ id: l.product.id, qty: l.qty })),
+        }),
       });
       const data = await res.json();
       if (!res.ok || !data.orderId) {
@@ -98,7 +118,7 @@ export default function CartDrawer() {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="absolute inset-0 z-[59]"
+          className="fixed inset-0 z-[80]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -109,11 +129,14 @@ export default function CartDrawer() {
           />
 
           <motion.aside
+            role="dialog"
+            aria-modal="true"
+            aria-label="Your cart"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 260, damping: 30 }}
-            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-void-red/30 bg-void-panel grain"
+            className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-void-red/30 bg-void-panel grain"
           >
             <div className="flex items-center justify-between border-b border-void-line px-6 py-5">
               <div>
@@ -127,7 +150,7 @@ export default function CartDrawer() {
               <button
                 onClick={close}
                 aria-label="Close cart"
-                className="grid h-9 w-9 place-items-center border border-void-line text-void-ash transition hover:border-void-red hover:text-white"
+                className="grid h-11 w-11 place-items-center border border-void-line text-void-ash transition hover:border-void-red hover:text-white sm:h-9 sm:w-9"
               >
                 ✕
               </button>
@@ -166,6 +189,13 @@ export default function CartDrawer() {
                         <p className="mt-2 font-mono text-[11px] tracking-widest text-void-ash/60">
                           RETURN TO THE WALL AND CLAIM A FRAME
                         </p>
+                        <Link
+                          href="/frames"
+                          onClick={close}
+                          className="void-btn mt-6 !px-6 !py-2 text-xs"
+                        >
+                          BROWSE THE COLLECTION
+                        </Link>
                       </div>
                     </div>
                   ) : (
@@ -193,7 +223,8 @@ export default function CartDrawer() {
                               <div className="flex items-center border border-void-line">
                                 <button
                                   onClick={() => changeQty(line.product.id, -1)}
-                                  className="px-2 py-1 text-void-ash transition hover:text-white"
+                                  aria-label={`Decrease quantity of ${line.product.title}`}
+                                  className="px-3 py-2 text-void-ash transition hover:text-white sm:px-2 sm:py-1"
                                 >
                                   −
                                 </button>
@@ -202,7 +233,9 @@ export default function CartDrawer() {
                                 </span>
                                 <button
                                   onClick={() => changeQty(line.product.id, 1)}
-                                  className="px-2 py-1 text-void-ash transition hover:text-white"
+                                  disabled={line.qty >= (line.product.maxQty ?? 99)}
+                                  aria-label={`Increase quantity of ${line.product.title}`}
+                                  className="px-3 py-2 text-void-ash transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30 sm:px-2 sm:py-1"
                                 >
                                   +
                                 </button>
@@ -214,8 +247,8 @@ export default function CartDrawer() {
                           </div>
                           <button
                             onClick={() => removeFromCart(line.product.id)}
-                            aria-label="Remove"
-                            className="self-start text-void-ash transition hover:text-void-red"
+                            aria-label={`Remove ${line.product.title}`}
+                            className="-m-2 self-start p-2 text-void-ash transition hover:text-void-red"
                           >
                             ✕
                           </button>
@@ -226,7 +259,7 @@ export default function CartDrawer() {
                 </div>
 
                 {cart.length > 0 && (
-                  <div className="border-t border-void-line px-6 py-5">
+                  <div className="border-t border-void-line px-6 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
                     <div className="flex items-center justify-between">
                       <span className="font-mono text-[11px] tracking-[0.3em] text-void-ash">
                         SUBTOTAL

@@ -70,7 +70,7 @@ export default function PosterArt({
         )}
         <div
           className={`font-display font-bold uppercase leading-none text-white ${
-            compact ? "text-xs" : "mt-1 text-lg"
+            compact ? "text-xs" : "mt-1 text-sm sm:text-lg"
           }`}
         >
           {product.title}

@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
+import { ALL_PRODUCTS } from "@/lib/products";
 
 // Runs on the Node serverless runtime so the secret key never reaches the browser.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const MAX_QTY_PER_LINE = 99;
+
 /**
- * Creates a Razorpay order. The client sends the amount (in paise); we authenticate
- * with the server-only key pair and return the order id + the PUBLIC key id that
+ * Creates a Razorpay order. The client sends cart line items ({id, qty}); we
+ * price them against the canonical catalog server-side (never trusting a
+ * browser-supplied amount), then return the order id + the PUBLIC key id that
  * Razorpay Checkout needs in the browser.
  */
 export async function POST(req: Request) {
@@ -20,16 +24,32 @@ export async function POST(req: Request) {
     );
   }
 
-  let amount = 0;
+  let items: unknown;
   try {
     const body = await req.json();
-    amount = Math.round(Number(body?.amount));
+    items = body?.items;
   } catch {
     /* fall through to validation */
   }
 
+  if (!Array.isArray(items) || items.length === 0) {
+    return NextResponse.json({ error: "Cart is empty." }, { status: 400 });
+  }
+
+  // Price the order from the catalog — reject anything we don't recognise.
+  let amount = 0; // paise
+  for (const line of items as { id?: unknown; qty?: unknown }[]) {
+    const product = ALL_PRODUCTS.find((p) => p.id === line?.id);
+    const qty = Math.floor(Number(line?.qty));
+    const maxQty = Math.min(product?.maxQty ?? MAX_QTY_PER_LINE, MAX_QTY_PER_LINE);
+    if (!product || !Number.isFinite(qty) || qty < 1 || qty > maxQty) {
+      return NextResponse.json({ error: "Invalid cart items." }, { status: 400 });
+    }
+    amount += product.price * 100 * qty;
+  }
+
   // Razorpay minimum is ₹1.00 = 100 paise.
-  if (!Number.isFinite(amount) || amount < 100) {
+  if (amount < 100) {
     return NextResponse.json({ error: "Invalid amount." }, { status: 400 });
   }
 

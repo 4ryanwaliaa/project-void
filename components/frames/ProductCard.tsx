@@ -49,24 +49,25 @@ export default function ProductCard({ product }: { product: Product }) {
       </div>
 
       {/* info */}
-      <div className="flex flex-1 flex-col p-5">
-        <div className="font-mono text-[10px] tracking-[0.3em] text-void-red">
+      <div className="flex flex-1 flex-col p-3 sm:p-5">
+        <div className="font-mono text-[9px] tracking-[0.3em] text-void-red sm:text-[10px]">
           {product.series}
         </div>
-        <h3 className="mt-1 font-display text-lg font-semibold leading-tight tracking-wide text-white">
+        <h3 className="mt-1 font-display text-sm font-semibold leading-tight tracking-wide text-white sm:text-lg">
           {product.title}
         </h3>
-        <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-void-ash">
+        <p className="mt-2 hidden text-xs leading-relaxed text-void-ash sm:line-clamp-2">
           {product.description}
         </p>
 
-        <div className="mt-5 flex items-center justify-between border-t border-void-line pt-4">
-          <span className="font-display text-xl font-bold text-white">
+        <div className="mt-3 flex flex-col gap-2 border-t border-void-line pt-3 sm:mt-5 sm:flex-row sm:items-center sm:justify-between sm:pt-4">
+          <span className="font-display text-base font-bold text-white sm:text-xl">
             {formatPrice(product.price)}
           </span>
           <button
             onClick={handleAdd}
-            className={`relative overflow-hidden border px-4 py-2 font-mono text-[11px] tracking-widest transition-all duration-300 ${
+            aria-live="polite"
+            className={`relative min-h-10 overflow-hidden border px-3 py-2 font-mono text-[10px] tracking-widest transition-all duration-300 sm:min-h-0 sm:px-4 sm:text-[11px] ${
               added
                 ? "border-void-red bg-void-red text-white"
                 : "border-void-red/60 text-white hover:bg-void-red/15"

@@ -16,12 +16,32 @@ import EmergencyBox from "@/components/three/EmergencyBox";
 import DustParticles from "@/components/three/DustParticles";
 import Effects from "@/components/three/Effects";
 
+/** Shown when WebGL is unavailable — the shop must stay reachable. */
+function CanvasFallback() {
+  return (
+    <div className="absolute inset-0 z-50 grid place-items-center bg-void-black p-6 text-center">
+      <div>
+        <div className="font-display text-xl font-bold tracking-[0.3em] text-white">
+          SIGNAL LOST
+        </div>
+        <p className="mt-3 font-mono text-[11px] tracking-widest text-void-ash">
+          YOUR BROWSER CAN&apos;T RENDER THE ROOM (WEBGL OFF)
+        </p>
+        <a href="/frames" className="void-btn mt-8">
+          BROWSE THE COLLECTION ›
+        </a>
+      </div>
+    </div>
+  );
+}
+
 export default function SceneCanvas() {
   const lowPower = useVoid((s) => s.lowPower);
 
   return (
     <Canvas
       className="absolute inset-0"
+      fallback={<CanvasFallback />}
       shadows
       dpr={[1, lowPower ? 1.5 : 2]}
       gl={{

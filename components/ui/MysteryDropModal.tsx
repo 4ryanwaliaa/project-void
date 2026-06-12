@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useVoid } from "@/lib/store";
 import { DROPS, type Drop } from "@/lib/drops";
@@ -18,11 +18,26 @@ export default function MysteryDropModal() {
   const [freq, setFreq] = useState("");
   const [locked, setLocked] = useState(false);
 
+  // Escape closes the vault; lock background scroll while open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open, close]);
+
   return (
     <AnimatePresence>
       {open && (
         <motion.div
-          className="absolute inset-0 z-[58] grid place-items-center p-4 sm:p-8"
+          className="fixed inset-0 z-[70] grid place-items-center p-4 sm:p-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -35,11 +50,14 @@ export default function MysteryDropModal() {
 
           {/* panel */}
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Emergency drop vault"
             initial={{ opacity: 0, scale: 0.94, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 10 }}
             transition={{ type: "spring", stiffness: 200, damping: 24 }}
-            className="cut-corner relative z-10 max-h-[88vh] w-full max-w-4xl overflow-hidden border border-void-red/40 bg-void-panel/95 shadow-red-glow-lg grain"
+            className="cut-corner relative z-10 flex max-h-[90dvh] w-full max-w-4xl flex-col overflow-hidden border border-void-red/40 bg-void-panel/95 shadow-red-glow-lg grain"
           >
             {/* scanline */}
             <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-20">
@@ -62,14 +80,14 @@ export default function MysteryDropModal() {
               <button
                 onClick={close}
                 aria-label="Close vault"
-                className="grid h-9 w-9 place-items-center border border-void-line text-void-ash transition hover:border-void-red hover:text-white"
+                className="grid h-11 w-11 shrink-0 place-items-center border border-void-line text-void-ash transition hover:border-void-red hover:text-white sm:h-9 sm:w-9"
               >
                 ✕
               </button>
             </div>
 
             {/* COMING SOON hero */}
-            <div className="relative border-b border-void-line px-6 py-10 text-center sm:px-8">
+            <div className="relative shrink-0 border-b border-void-line px-6 py-6 text-center sm:px-8 sm:py-10">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -89,7 +107,7 @@ export default function MysteryDropModal() {
             </div>
 
             {/* drops */}
-            <div className="void-scroll max-h-[42vh] overflow-y-auto px-6 py-6 sm:px-8">
+            <div className="void-scroll min-h-0 flex-1 overflow-y-auto px-6 py-6 sm:px-8">
               <div className="grid gap-4 sm:grid-cols-2">
                 {DROPS.map((drop, i) => (
                   <motion.div
@@ -129,7 +147,7 @@ export default function MysteryDropModal() {
             </div>
 
             {/* notify footer */}
-            <div className="border-t border-void-line bg-black/40 px-6 py-5 sm:px-8">
+            <div className="shrink-0 border-t border-void-line bg-black/40 px-6 py-5 sm:px-8">
               {locked ? (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -155,7 +173,8 @@ export default function MysteryDropModal() {
                     value={freq}
                     onChange={(e) => setFreq(e.target.value)}
                     placeholder="signal@projectvoid.io"
-                    className="flex-1 border border-void-line bg-black/60 px-4 py-2 font-mono text-sm text-white placeholder:text-void-ash/50 focus:border-void-red focus:outline-none"
+                    aria-label="Email address"
+                    className="flex-1 border border-void-line bg-black/60 px-4 py-2.5 font-mono text-base text-white placeholder:text-void-ash/50 focus:border-void-red focus:outline-none sm:py-2 sm:text-sm"
                   />
                   <button type="submit" className="void-btn !px-6 !py-2 text-xs">
                     NOTIFY ME

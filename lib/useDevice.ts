@@ -33,9 +33,11 @@ export function useDevice(): DeviceInfo {
 
     update();
     mq.addEventListener("change", update);
+    touch.addEventListener("change", update);
     motion.addEventListener("change", update);
     return () => {
       mq.removeEventListener("change", update);
+      touch.removeEventListener("change", update);
       motion.removeEventListener("change", update);
     };
   }, []);

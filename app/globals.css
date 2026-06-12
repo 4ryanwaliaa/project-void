@@ -19,6 +19,19 @@ body {
   background: var(--void-black);
   color: #fff;
   overscroll-behavior: none;
+  /* Kill 300ms tap delay + double-tap zoom while keeping pinch-zoom available. */
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* touch-action doesn't inherit — interactive elements need it directly. */
+a,
+button,
+input,
+label,
+select,
+textarea {
+  touch-action: manipulation;
 }
 
 body {

@@ -84,7 +84,7 @@ export default function FramesWall() {
             zIndexRange={[20, 0]}
             style={{ pointerEvents: "none" }}
           >
-            <div className="whitespace-nowrap text-center font-display text-base font-bold tracking-[0.35em] text-white void-label">
+            <div className="whitespace-nowrap text-center font-display text-[10px] font-bold tracking-[0.25em] text-white void-label sm:text-sm sm:tracking-[0.35em] lg:text-base">
               FRAMES COLLECTION
             </div>
           </Html>
@@ -104,7 +104,7 @@ export default function FramesWall() {
                 setHover("none");
                 setLocalHover(false);
               }}
-              className={`flex items-center gap-2 whitespace-nowrap font-mono text-[11px] font-bold tracking-[0.3em] void-label transition ${
+              className={`flex items-center gap-2 whitespace-nowrap px-3 py-2 font-mono text-[9px] font-bold tracking-[0.3em] void-label transition sm:text-[11px] ${
                 active ? "text-white" : "text-white/85"
               }`}
             >

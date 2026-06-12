@@ -235,7 +235,7 @@ export default function EmergencyBox() {
       {showLabels && (
         <>
           <Html position={[0, 1.35, 0.1]} center zIndexRange={[20, 0]} style={{ pointerEvents: "none" }}>
-            <div className="whitespace-nowrap text-center font-display text-base font-bold tracking-[0.35em] text-white void-label">
+            <div className="max-w-28 whitespace-normal text-center font-display text-[10px] font-bold leading-snug tracking-[0.25em] text-white void-label sm:max-w-none sm:whitespace-nowrap sm:text-sm sm:tracking-[0.35em] lg:text-base">
               EMERGENCY BOX
             </div>
           </Html>
@@ -250,7 +250,7 @@ export default function EmergencyBox() {
                 setHover("none");
                 setLocalHover(false);
               }}
-              className={`flex items-center gap-2 whitespace-nowrap font-mono text-[11px] font-bold tracking-[0.3em] void-label transition ${
+              className={`flex items-center gap-2 whitespace-nowrap px-2 py-2 font-mono text-[9px] font-bold tracking-[0.25em] void-label transition sm:px-3 sm:tracking-[0.3em] sm:text-[11px] ${
                 active ? "text-white" : "text-white/85"
               }`}
             >

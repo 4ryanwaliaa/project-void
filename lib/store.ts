@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { Phase, FocusTarget } from "./constants";
 import type { Product } from "./products";
 import { startVoidAmbience, setAmbienceMuted } from "./audio";
@@ -22,6 +23,8 @@ interface VoidState {
   alarm: boolean;
   /** Mystery Drop modal. */
   modalOpen: boolean;
+  /** Wall clock 1-of-1 limited offer modal. */
+  clockOfferOpen: boolean;
   /** Ecommerce cart. */
   cart: CartLine[];
   cartOpen: boolean;
@@ -29,6 +32,8 @@ interface VoidState {
   lowPower: boolean;
   /** Portrait/handheld — drives the backed-up camera framing. */
   isMobile: boolean;
+  /** prefers-reduced-motion — skips the cinematic flythrough. */
+  reducedMotion: boolean;
   /** HUD sound toggle. */
   soundMuted: boolean;
   /** drei useProgress feeds this so the landing screen knows assets are ready. */
@@ -44,8 +49,12 @@ interface VoidState {
   setAlarm: (v: boolean) => void;
   openModal: () => void;
   closeModal: () => void;
+  /** Click the wall clock: camera dives in, then the limited offer opens. */
+  claimClock: () => void;
+  closeClockOffer: () => void;
   setLowPower: (v: boolean) => void;
   setIsMobile: (v: boolean) => void;
+  setReducedMotion: (v: boolean) => void;
   toggleSound: () => void;
   setAssetsReady: (v: boolean) => void;
 
@@ -58,17 +67,21 @@ interface VoidState {
   cartTotal: () => number;
 }
 
-export const useVoid = create<VoidState>((set, get) => ({
+export const useVoid = create<VoidState>()(
+  persist(
+    (set, get) => ({
   phase: "boot",
   focus: "none",
   hover: "none",
   glassBroken: false,
   alarm: false,
   modalOpen: false,
+  clockOfferOpen: false,
   cart: [],
   cartOpen: false,
   lowPower: false,
   isMobile: false,
+  reducedMotion: false,
   soundMuted: false,
   assetsReady: false,
 
@@ -105,8 +118,17 @@ export const useVoid = create<VoidState>((set, get) => ({
   setAlarm: (v) => set({ alarm: v }),
   openModal: () => set({ modalOpen: true }),
   closeModal: () => set({ modalOpen: false, focus: "none" }),
+
+  claimClock: () => {
+    if (get().phase !== "hub") return;
+    set({ focus: "clock", hover: "none" });
+    // Let the camera dive most of the way in before the offer drops.
+    setTimeout(() => set({ clockOfferOpen: true }), 650);
+  },
+  closeClockOffer: () => set({ clockOfferOpen: false, focus: "none" }),
   setLowPower: (v) => set({ lowPower: v }),
   setIsMobile: (v) => set({ isMobile: v }),
+  setReducedMotion: (v) => set({ reducedMotion: v }),
   toggleSound: () =>
     set((s) => {
       const muted = !s.soundMuted;
@@ -117,8 +139,10 @@ export const useVoid = create<VoidState>((set, get) => ({
 
   addToCart: (product) =>
     set((s) => {
+      const max = product.maxQty ?? 99;
       const existing = s.cart.find((l) => l.product.id === product.id);
       if (existing) {
+        if (existing.qty >= max) return {}; // 1-of-1s stay 1-of-1
         return {
           cart: s.cart.map((l) =>
             l.product.id === product.id ? { ...l, qty: l.qty + 1 } : l
@@ -135,7 +159,15 @@ export const useVoid = create<VoidState>((set, get) => ({
     set((s) => ({
       cart: s.cart
         .map((l) =>
-          l.product.id === id ? { ...l, qty: Math.max(0, l.qty + delta) } : l
+          l.product.id === id
+            ? {
+                ...l,
+                qty: Math.min(
+                  l.product.maxQty ?? 99,
+                  Math.max(0, l.qty + delta)
+                ),
+              }
+            : l
         )
         .filter((l) => l.qty > 0),
     })),
@@ -146,4 +178,13 @@ export const useVoid = create<VoidState>((set, get) => ({
 
   cartCount: () => get().cart.reduce((n, l) => n + l.qty, 0),
   cartTotal: () => get().cart.reduce((n, l) => n + l.qty * l.product.price, 0),
-}));
+    }),
+    {
+      name: "void-store",
+      storage: createJSONStorage(() => localStorage),
+      // Only the shopper's cart + sound preference survive a refresh; the
+      // experience phase machine always boots fresh.
+      partialize: (s) => ({ cart: s.cart, soundMuted: s.soundMuted }),
+    }
+  )
+);

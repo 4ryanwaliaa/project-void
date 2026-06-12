@@ -9,6 +9,7 @@ import { useDevice } from "@/lib/useDevice";
 import LandingScreen from "@/components/ui/LandingScreen";
 import Hud from "@/components/ui/Hud";
 import MysteryDropModal from "@/components/ui/MysteryDropModal";
+import ClockOfferModal from "@/components/ui/ClockOfferModal";
 import CartDrawer from "@/components/ui/CartDrawer";
 import AlarmOverlay from "@/components/ui/AlarmOverlay";
 
@@ -24,6 +25,7 @@ export default function VoidExperience() {
   const setPhase = useVoid((s) => s.setPhase);
   const setLowPower = useVoid((s) => s.setLowPower);
   const setIsMobile = useVoid((s) => s.setIsMobile);
+  const setReducedMotion = useVoid((s) => s.setReducedMotion);
   const { isMobile, reducedMotion } = useDevice();
 
   // Kick the machine from the implicit "boot" into "landing" once mounted.
@@ -43,7 +45,8 @@ export default function VoidExperience() {
   useEffect(() => {
     setLowPower(isMobile || reducedMotion);
     setIsMobile(isMobile);
-  }, [isMobile, reducedMotion, setLowPower, setIsMobile]);
+    setReducedMotion(reducedMotion);
+  }, [isMobile, reducedMotion, setLowPower, setIsMobile, setReducedMotion]);
 
   // When the camera finishes its dive into the frames wall, route to the gallery.
   useEffect(() => {
@@ -74,6 +77,9 @@ export default function VoidExperience() {
 
       {/* Mystery Drop vault. */}
       <MysteryDropModal />
+
+      {/* 1-of-1 wall clock limited offer. */}
+      <ClockOfferModal />
 
       {/* Ecommerce cart (shared with /frames). */}
       <CartDrawer />

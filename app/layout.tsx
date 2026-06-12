@@ -26,7 +26,10 @@ const mono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PROJECT VOID — Enter The Void",
+  title: {
+    default: "PROJECT VOID — Enter The Void",
+    template: "%s — PROJECT VOID",
+  },
   description:
     "A secret collector's room hidden in a cyberpunk anime universe. Premium framed anime art. Enter The Void.",
   metadataBase: new URL("https://projectvoid.example"),
@@ -34,15 +37,21 @@ export const metadata: Metadata = {
     title: "PROJECT VOID",
     description: "Enter The Void. Premium anime decor for the collector class.",
     type: "website",
+    siteName: "PROJECT VOID",
   },
-  icons: { icon: "/brand/favicon.svg" },
+  icons: {
+    icon: "/brand/favicon.svg",
+    apple: "/brand/void-logo.png",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // viewport-fit=cover lets the HUD pad itself around notches/home bars;
+  // pinch-zoom stays enabled for accessibility (double-tap zoom is disabled
+  // via touch-action in globals.css instead).
+  viewportFit: "cover",
   themeColor: "#050505",
 };
 
@@ -56,7 +65,15 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
-      <body className="bg-void-black text-white antialiased">{children}</body>
+      {/* suppressHydrationWarning: browser extensions inject attributes into
+          <body> before React hydrates (e.g. inject_newvt_svd) — only this
+          element's attribute mismatches are ignored, children still validate. */}
+      <body
+        suppressHydrationWarning
+        className="bg-void-black text-white antialiased"
+      >
+        {children}
+      </body>
     </html>
   );
 }

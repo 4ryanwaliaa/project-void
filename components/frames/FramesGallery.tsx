@@ -16,15 +16,16 @@ export default function FramesGallery() {
     <div className="relative min-h-[100dvh] bg-void-black text-white grain">
       {/* sticky header */}
       <header className="sticky top-0 z-40 border-b border-void-line bg-void-black/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-8 sm:py-4">
           <Link
             href="/"
-            className="group flex items-center gap-2 font-mono text-[11px] tracking-[0.3em] text-void-ash transition hover:text-white"
+            className="group flex min-h-11 items-center gap-2 font-mono text-[11px] tracking-[0.3em] text-void-ash transition hover:text-white sm:min-h-0"
           >
             <span className="transition-transform group-hover:-translate-x-1">
               ◂
             </span>
-            BACK TO THE ROOM
+            <span className="hidden sm:inline">BACK TO THE ROOM</span>
+            <span className="sm:hidden">THE ROOM</span>
           </Link>
 
           <Link href="/" className="flex items-center gap-2">
@@ -36,7 +37,7 @@ export default function FramesGallery() {
 
           <button
             onClick={() => setCartOpen(true)}
-            className="flex items-center gap-2 border border-void-red/40 bg-black/40 px-3 py-2 font-mono text-[10px] tracking-widest text-white transition hover:border-void-red hover:bg-void-red/10"
+            className="flex min-h-11 items-center gap-2 border border-void-red/40 bg-black/40 px-4 py-2 font-mono text-[10px] tracking-widest text-white transition hover:border-void-red hover:bg-void-red/10 sm:min-h-0 sm:px-3"
           >
             CART
             <span className="grid h-4 min-w-4 place-items-center bg-void-red px-1 text-[10px]">
@@ -75,12 +76,20 @@ export default function FramesGallery() {
           <div className="mt-6 font-mono text-[11px] tracking-[0.3em] text-void-ash">
             {PRODUCTS.length.toString().padStart(2, "0")} PIECES AVAILABLE
           </div>
+
+          {/* trust strip */}
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-void-line pt-5 font-mono text-[9px] tracking-[0.25em] text-void-ash/80 sm:text-[10px]">
+            <span>◆ ARCHIVAL GICLÉE PRINT</span>
+            <span>◆ SHADOW-BOX FRAME</span>
+            <span>◆ SHIPS ACROSS INDIA</span>
+            <span>◆ SECURE UPI / CARD CHECKOUT</span>
+          </div>
         </motion.div>
       </section>
 
       {/* grid */}
-      <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-8">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
           {PRODUCTS.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -98,6 +107,29 @@ export default function FramesGallery() {
             計画虚空 — PREMIUM ANIME DECOR FOR THE COLLECTOR CLASS. SHIPPED
             WORLDWIDE FROM THE VOID.
           </p>
+          <nav className="mt-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[10px] tracking-[0.3em]">
+            <Link
+              href="/"
+              className="text-void-ash transition hover:text-white"
+            >
+              THE ROOM
+            </Link>
+            <button
+              onClick={() => setCartOpen(true)}
+              className="text-void-ash transition hover:text-white"
+            >
+              CART
+            </button>
+            <a
+              href="mailto:signal@projectvoid.io"
+              className="text-void-ash transition hover:text-white"
+            >
+              CONTACT
+            </a>
+          </nav>
+          <div className="font-mono text-[9px] tracking-[0.3em] text-void-ash/50">
+            © {new Date().getFullYear()} PROJECT VOID
+          </div>
         </div>
       </footer>
 

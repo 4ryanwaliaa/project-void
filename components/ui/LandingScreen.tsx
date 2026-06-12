@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { useVoid } from "@/lib/store";
 import VoidLogo from "./VoidLogo";
@@ -74,6 +75,15 @@ export default function LandingScreen() {
             ›
           </span>
         </motion.button>
+
+        <motion.div variants={item} className="mt-5">
+          <Link
+            href="/frames"
+            className="font-mono text-[10px] tracking-[0.3em] text-void-ash underline-offset-4 transition hover:text-white hover:underline"
+          >
+            SKIP — BROWSE THE COLLECTION ›
+          </Link>
+        </motion.div>
 
         <motion.div
           variants={item}

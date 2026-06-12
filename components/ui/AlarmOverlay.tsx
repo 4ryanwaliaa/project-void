@@ -12,7 +12,7 @@ export default function AlarmOverlay() {
       {alarm && (
         <motion.div
           key="alarm"
-          className="pointer-events-none absolute inset-0 z-[55]"
+          className="pointer-events-none fixed inset-0 z-[55]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

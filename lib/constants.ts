@@ -61,14 +61,17 @@ export const CAMERA = {
     hub: new THREE.Vector3(0, 1.0, 4.6),
     look: new THREE.Vector3(0, -0.5, BACK_Z),
   },
+  // Mobile centres on the prop span (frames cluster → box, midpoint ≈ -0.8)
+  // and widens the FOV so the whole interactive band fits a portrait screen.
   mobile: {
-    fov: 70,
-    hub: new THREE.Vector3(0, 1.1, 8.2),
-    look: new THREE.Vector3(0, -0.1, BACK_Z),
+    fov: 78,
+    hub: new THREE.Vector3(-0.8, 1.1, 8.2),
+    look: new THREE.Vector3(-0.8, -0.1, BACK_Z),
   },
 
   framesFocus: new THREE.Vector3(-2.8, 0.2, -5.4),
   boxFocus: new THREE.Vector3(2.8, 0.4, -5.6),
+  clockFocus: new THREE.Vector3(0, 0.55, -5.6),
 } as const;
 
 // Tight look range — the objects must never leave the frame.
@@ -87,4 +90,4 @@ export const PARTICLES = {
 } as const;
 
 export type Phase = "boot" | "landing" | "entering" | "hub" | "toFrames";
-export type FocusTarget = "none" | "frames" | "box";
+export type FocusTarget = "none" | "frames" | "box" | "clock";

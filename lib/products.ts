@@ -14,6 +14,10 @@ export interface Product {
   tag: "FRAME" | "LIMITED" | "VAULT";
   edition: string;
   description: string;
+  /** Hard per-order cap (e.g. 1-of-1 drops). Unset = no cap. */
+  maxQty?: number;
+  /** Strike-through anchor price for limited offers. */
+  compareAt?: number;
 }
 
 // Every frame is priced at ₹799 (so the average across the collection is ₹799).
@@ -100,8 +104,31 @@ export const PRODUCTS: Product[] = [
   },
 ];
 
+/**
+ * The wall clock — a 1-of-1 in-room drop, sold off the wall itself.
+ * Lives OUTSIDE PRODUCTS so it doesn't get hung on the frames wall grid.
+ */
+export const CLOCK_PRODUCT: Product = {
+  id: "void-chrono-001",
+  slug: "gearwork-chrono",
+  title: "GEARWORK CHRONO",
+  series: "VOID HOROLOGY",
+  price: 1299,
+  compareAt: 2999,
+  image: "/products/p-gearwork-chrono.png",
+  accent: "#D1001F",
+  tag: "VAULT",
+  edition: "1 OF 1",
+  maxQty: 1,
+  description:
+    "Skeleton gearwork wall clock pulled straight off the room's wall. Exposed ivory gear train, live mechanical tick, black glass bezel. One unit exists — when it's gone, it's gone.",
+};
+
+/** Everything money can buy — used by the server to price orders. */
+export const ALL_PRODUCTS: Product[] = [...PRODUCTS, CLOCK_PRODUCT];
+
 export function getProduct(slug: string): Product | undefined {
-  return PRODUCTS.find((p) => p.slug === slug);
+  return ALL_PRODUCTS.find((p) => p.slug === slug);
 }
 
 export function formatPrice(value: number): string {

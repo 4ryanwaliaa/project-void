@@ -28,6 +28,7 @@ export default function CameraRig() {
   const phase = useVoid((s) => s.phase);
   const focus = useVoid((s) => s.focus);
   const isMobile = useVoid((s) => s.isMobile);
+  const reducedMotion = useVoid((s) => s.reducedMotion);
   const setPhase = useVoid((s) => s.setPhase);
 
   const enterStart = useRef<number | null>(null);
@@ -50,6 +51,15 @@ export default function CameraRig() {
 
     // ---------------------------------------------------------------- ENTERING
     if (phase === "entering") {
+      // Respect prefers-reduced-motion: no 5s flythrough, just cut to the hub.
+      if (reducedMotion) {
+        camera.position.copy(preset.hub);
+        smoothedLook.current.copy(preset.look);
+        camera.lookAt(smoothedLook.current);
+        enterStart.current = null;
+        setPhase("hub");
+        return;
+      }
       if (enterStart.current === null) enterStart.current = t;
       const e = Math.min(1, (t - enterStart.current) / CAMERA.flythroughDuration);
       const k = easeInOutCubic(e);
@@ -98,11 +108,23 @@ export default function CameraRig() {
       return;
     }
 
+    if (focus === "clock") {
+      desiredPos.copy(CAMERA.clockFocus);
+      desiredLook.copy(ANCHORS.clock);
+      easing.damp3(camera.position, desiredPos, 0.5, delta);
+      easing.damp3(smoothedLook.current, desiredLook, 0.45, delta);
+      camera.lookAt(smoothedLook.current);
+      return;
+    }
+
     // --------------------------------------------------------- HUB / LANDING
     const inHub = phase === "hub";
+    // Touch screens get a wider pan range so a drag can peek across the wall.
+    const panX = isMobile ? 1.2 : 0.5;
+    const lookX = isMobile ? 26 : 14;
     desiredPos.copy(preset.hub);
     if (inHub) {
-      desiredPos.x += px * 0.5 + sway * 3;
+      desiredPos.x += px * panX + sway * 3;
       desiredPos.y += py * 0.18 + bob * 3;
     } else {
       desiredPos.copy(CAMERA.start);
@@ -111,7 +133,7 @@ export default function CameraRig() {
 
     desiredLook.copy(preset.look);
     if (inHub) {
-      desiredLook.x += px * LOOK.maxYaw * 14 + sway * 4;
+      desiredLook.x += px * LOOK.maxYaw * lookX + sway * 4;
       desiredLook.y += py * LOOK.maxPitch * 12 + bob * 4;
     }
     easing.damp3(smoothedLook.current, desiredLook, inHub ? 0.32 : 0.7, delta);
