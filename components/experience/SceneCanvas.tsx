@@ -2,6 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
+import Link from "next/link";
 import { AdaptiveDpr, AdaptiveEvents, Preload } from "@react-three/drei";
 import * as THREE from "three";
 import { CAMERA, COLORS } from "@/lib/constants";
@@ -27,9 +28,9 @@ function CanvasFallback() {
         <p className="mt-3 font-mono text-[11px] tracking-widest text-void-ash">
           YOUR BROWSER CAN&apos;T RENDER THE ROOM (WEBGL OFF)
         </p>
-        <a href="/frames" className="void-btn mt-8">
+        <Link href="/frames" className="void-btn mt-8">
           BROWSE THE COLLECTION ›
-        </a>
+        </Link>
       </div>
     </div>
   );
