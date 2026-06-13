@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Chakra_Petch, Inter, Space_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // Display: techno-condensed, carries the cyberpunk-anime HUD voice.
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
   },
   description:
     "A secret collector's room hidden in a cyberpunk anime universe. Premium framed anime art. Enter The Void.",
-  metadataBase: new URL("https://projectvoid.example"),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: "PROJECT VOID",
     description: "Enter The Void. Premium anime decor for the collector class.",
@@ -65,6 +66,13 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
+      <head>
+        {/* Warm DNS/TLS to Razorpay so the checkout SDK + API are fast when
+            the shopper reaches the PAY button. */}
+        <link rel="preconnect" href="https://checkout.razorpay.com" crossOrigin="" />
+        <link rel="preconnect" href="https://api.razorpay.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://checkout.razorpay.com" />
+      </head>
       {/* suppressHydrationWarning: browser extensions inject attributes into
           <body> before React hydrates (e.g. inject_newvt_svd) — only this
           element's attribute mismatches are ignored, children still validate. */}

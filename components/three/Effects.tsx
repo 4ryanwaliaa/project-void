@@ -37,7 +37,7 @@ export default function Effects() {
   }
 
   return (
-    <EffectComposer enableNormalPass={false} multisampling={4}>
+    <EffectComposer enableNormalPass={false} multisampling={2}>
       <Bloom
         mipmapBlur
         intensity={1.45}

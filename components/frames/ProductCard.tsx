@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Product } from "@/lib/products";
 import { formatPrice } from "@/lib/products";
@@ -31,8 +32,12 @@ export default function ProductCard({ product }: { product: Product }) {
       transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
       className="group relative flex flex-col border border-void-line bg-void-secondary/40 transition-colors duration-300 hover:border-void-red/60"
     >
-      {/* art */}
-      <div className="relative overflow-hidden">
+      {/* art → product dossier */}
+      <Link
+        href={`/frames/${product.slug}`}
+        className="relative block overflow-hidden"
+        aria-label={`View ${product.title}`}
+      >
         <motion.div
           whileHover={{ scale: 1.04 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -46,7 +51,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </span>
         {/* hover glow */}
         <div className="pointer-events-none absolute inset-0 opacity-0 shadow-red-glow-lg transition-opacity duration-500 group-hover:opacity-100" />
-      </div>
+      </Link>
 
       {/* info */}
       <div className="flex flex-1 flex-col p-3 sm:p-5">
@@ -54,7 +59,12 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.series}
         </div>
         <h3 className="mt-1 font-display text-sm font-semibold leading-tight tracking-wide text-white sm:text-lg">
-          {product.title}
+          <Link
+            href={`/frames/${product.slug}`}
+            className="transition-colors hover:text-void-red-bright"
+          >
+            {product.title}
+          </Link>
         </h3>
         <p className="mt-2 hidden text-xs leading-relaxed text-void-ash sm:line-clamp-2">
           {product.description}

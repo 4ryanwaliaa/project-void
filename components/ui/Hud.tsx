@@ -66,7 +66,7 @@ export default function Hud() {
               className="absolute inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] text-center font-mono text-[10px] tracking-[0.3em] text-void-ash"
             >
               {isTouch
-                ? "TAP A PANEL · DRAG TO LOOK AROUND"
+                ? "TAP A PANEL · TILT OR DRAG TO LOOK"
                 : "CLICK A PANEL TO INTERACT"}
             </motion.div>
           </>

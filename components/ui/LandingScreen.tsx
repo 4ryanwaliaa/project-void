@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useVoid } from "@/lib/store";
+import { enableGyroLook } from "@/lib/gyro";
 import VoidLogo from "./VoidLogo";
 
 const container = {
@@ -65,7 +66,12 @@ export default function LandingScreen() {
 
         <motion.button
           variants={item}
-          onClick={enter}
+          onClick={() => {
+            // iOS only grants motion-sensor access from inside a tap gesture,
+            // so the gyro look has to be armed here, not after the flythrough.
+            enableGyroLook();
+            enter();
+          }}
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.97 }}
           className="void-btn group mt-12"

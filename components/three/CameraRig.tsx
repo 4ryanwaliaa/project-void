@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { easing } from "maath";
 import { CAMERA, LOOK, ANCHORS } from "@/lib/constants";
 import { useVoid } from "@/lib/store";
+import { gyroLook } from "@/lib/gyro";
 
 function easeInOutCubic(x: number): number {
   return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
@@ -86,12 +87,12 @@ export default function CameraRig() {
     if (focus === "frames") {
       desiredPos.copy(CAMERA.framesFocus);
       desiredLook.copy(ANCHORS.frames);
-      easing.damp3(camera.position, desiredPos, 0.5, delta);
-      easing.damp3(smoothedLook.current, desiredLook, 0.4, delta);
+      easing.damp3(camera.position, desiredPos, 0.38, delta);
+      easing.damp3(smoothedLook.current, desiredLook, 0.32, delta);
       camera.lookAt(smoothedLook.current);
       if (
         !arrivedFrames.current &&
-        camera.position.distanceToSquared(desiredPos) < 0.06
+        camera.position.distanceToSquared(desiredPos) < 0.09
       ) {
         arrivedFrames.current = true;
         setPhase("toFrames");
@@ -122,10 +123,15 @@ export default function CameraRig() {
     // Touch screens get a wider pan range so a drag can peek across the wall.
     const panX = isMobile ? 1.2 : 0.5;
     const lookX = isMobile ? 26 : 14;
+    // Gyro look: on mobile, tilting the phone pans the room. Blended with the
+    // drag pointer and clamped so the combination can't over-rotate the view.
+    const useGyro = isMobile && gyroLook.enabled && !reducedMotion;
+    const lx = THREE.MathUtils.clamp(px + (useGyro ? gyroLook.x : 0), -1, 1);
+    const ly = THREE.MathUtils.clamp(py + (useGyro ? gyroLook.y : 0), -1, 1);
     desiredPos.copy(preset.hub);
     if (inHub) {
-      desiredPos.x += px * panX + sway * 3;
-      desiredPos.y += py * 0.18 + bob * 3;
+      desiredPos.x += lx * panX + sway * 3;
+      desiredPos.y += ly * 0.18 + bob * 3;
     } else {
       desiredPos.copy(CAMERA.start);
     }
@@ -133,8 +139,8 @@ export default function CameraRig() {
 
     desiredLook.copy(preset.look);
     if (inHub) {
-      desiredLook.x += px * LOOK.maxYaw * lookX + sway * 4;
-      desiredLook.y += py * LOOK.maxPitch * 12 + bob * 4;
+      desiredLook.x += lx * LOOK.maxYaw * lookX + sway * 4;
+      desiredLook.y += ly * LOOK.maxPitch * 12 + bob * 4;
     }
     easing.damp3(smoothedLook.current, desiredLook, inHub ? 0.32 : 0.7, delta);
     camera.lookAt(smoothedLook.current);

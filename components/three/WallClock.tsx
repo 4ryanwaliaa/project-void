@@ -485,10 +485,14 @@ export default function WallClock() {
       </mesh>
 
       {/* ------------------------------------------------ HUB LABELS */}
+      {/* The clock sits dead-centre between the frames (left) and box (right)
+          zones, so its title rides in its own raised lane — on wide/short
+          screens perspective squeezes the side labels inward and they'd
+          otherwise collide with a centre label at the same height. */}
       {showLabels && !isMobile && (
         <>
-          <Html position={[0, R + 0.42, 0.1]} center zIndexRange={[20, 0]} style={{ pointerEvents: "none" }}>
-            <div className="whitespace-nowrap text-center font-display text-[10px] font-bold tracking-[0.25em] text-white void-label sm:text-sm sm:tracking-[0.35em] lg:text-base">
+          <Html position={[0, R + 1.15, 0.1]} center zIndexRange={[20, 0]} style={{ pointerEvents: "none" }}>
+            <div className="whitespace-nowrap text-center font-display text-[10px] font-bold tracking-[0.2em] text-white void-label sm:text-sm sm:tracking-[0.3em] lg:text-base">
               GEARWORK CHRONO
             </div>
           </Html>

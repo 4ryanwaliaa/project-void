@@ -32,15 +32,32 @@ export const ROOM = {
 export const BACK_Z = -ROOM.depth / 2; // -12 : the feature wall
 const WALL = BACK_Z + 0.16; // props sit just proud of the wall
 
-// ---- Frames Collection — left ~30% of the wall (3 cols × 2 rows) ----
-export const FRAME_COLS = [-6.4, -4.6, -2.8]; // 1.8 spacing
-export const FRAME_ROWS = [1.0, -0.5]; // 1.5 spacing
-export const FRAME_SIZE: [number, number] = [1.25, 1.45];
+// ---- Frames Collection — curated "salon hang" on the left ~30% of the wall ----
+// Six pieces at two sizes with staggered heights, so the wall reads like a real
+// collector's gallery instead of a uniform grid. Index order matches PRODUCTS;
+// the flagship (neon-requiem, index 5) takes the large hero slot in the centre.
+const FRAME_L: [number, number] = [1.5, 1.75];
+const FRAME_S: [number, number] = [1.0, 1.1];
+
+export interface FrameSlot {
+  pos: [number, number];
+  size: [number, number];
+}
+
+export const FRAME_SLOTS: FrameSlot[] = [
+  { pos: [-6.3, 0.95], size: FRAME_S }, // 0 give-up        — top-left
+  { pos: [-6.2, -0.45], size: FRAME_S }, // 1 baryon         — lower-left
+  { pos: [-2.95, 0.9], size: FRAME_S }, // 2 void-signal     — top-right
+  { pos: [-2.9, -0.5], size: FRAME_S }, // 3 crimson-ronin   — lower-right
+  { pos: [-4.6, -0.95], size: FRAME_S }, // 4 ghost-protocol — bottom-centre
+  { pos: [-4.6, 0.6], size: FRAME_L }, // 5 neon-requiem     — hero centre
+];
+
 export const FRAME_Z = WALL;
 
 // World anchors (centres) used by props + camera focus moves.
 export const ANCHORS = {
-  frames: new THREE.Vector3(-4.6, 0.25, WALL),
+  frames: new THREE.Vector3(-4.6, 0.1, WALL),
   clock: new THREE.Vector3(0, 0.55, WALL),
   box: new THREE.Vector3(4.6, 0.4, WALL),
 } as const;

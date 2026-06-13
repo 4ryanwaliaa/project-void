@@ -31,6 +31,17 @@ export default function CartDrawer() {
     }, 300);
   };
 
+  // Warm the Razorpay SDK as soon as the cart opens (idle), so clicking PAY
+  // doesn't stall while a few hundred KB of checkout script downloads.
+  useEffect(() => {
+    if (!open) return;
+    const w = window as unknown as {
+      requestIdleCallback?: (cb: () => void) => number;
+    };
+    if (w.requestIdleCallback) w.requestIdleCallback(() => void loadRazorpay());
+    else setTimeout(() => void loadRazorpay(), 200);
+  }, [open]);
+
   // Escape closes the drawer; lock page scroll behind it while it's open.
   useEffect(() => {
     if (!open) return;

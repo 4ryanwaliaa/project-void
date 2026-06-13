@@ -70,8 +70,8 @@ export default function Room() {
           />
         ) : (
           <MeshReflectorMaterial
-            resolution={512}
-            blur={[256, 80]}
+            resolution={256}
+            blur={[128, 32]}
             mixBlur={0.9}
             mixStrength={1.4}
             mirror={0.72}

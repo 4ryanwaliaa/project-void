@@ -49,15 +49,21 @@ export default function VoidExperience() {
   }, [isMobile, reducedMotion, setLowPower, setIsMobile, setReducedMotion]);
 
   // When the camera finishes its dive into the frames wall, route to the gallery.
+  // The wipe covers the screen in 350ms, so push just after it's opaque.
   useEffect(() => {
     if (phase !== "toFrames") return;
-    const t = setTimeout(() => router.push("/frames"), 650);
+    const t = setTimeout(() => router.push("/frames"), 380);
     return () => clearTimeout(t);
   }, [phase, router]);
 
-  // Prefetch the gallery route so the hand-off feels instant.
+  // Prefetch the gallery route on idle so the hand-off is instant.
   useEffect(() => {
-    router.prefetch("/frames");
+    const w = window as unknown as {
+      requestIdleCallback?: (cb: () => void) => number;
+    };
+    const run = () => router.prefetch("/frames");
+    if (w.requestIdleCallback) w.requestIdleCallback(run);
+    else run();
   }, [router]);
 
   return (
@@ -92,7 +98,7 @@ export default function VoidExperience() {
             className="pointer-events-none absolute inset-0 z-[60] bg-void-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, ease: "easeIn" }}
+            transition={{ duration: 0.35, ease: "easeIn" }}
           />
         )}
       </AnimatePresence>

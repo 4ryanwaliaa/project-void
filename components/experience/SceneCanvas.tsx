@@ -43,7 +43,9 @@ export default function SceneCanvas() {
       className="absolute inset-0"
       fallback={<CanvasFallback />}
       shadows
-      dpr={[1, lowPower ? 1.5 : 2]}
+      // Cap device-pixel-ratio: a full reflective+bloom scene at DPR 2 on a
+      // retina/4K display renders 4× the fragments for little visible gain.
+      dpr={[1, lowPower ? 1.25 : 1.6]}
       gl={{
         antialias: true,
         powerPreference: "high-performance",
